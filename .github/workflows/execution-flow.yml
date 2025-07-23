@@ -32,11 +32,12 @@ jobs:
           path: ~/.npm
           key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
       - name: Install dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
         run: npm ci
         id: run-steps
       - name: Test code
         run: npm run test
-        if: failure () && steps.run-steps.outputs.success == 'failure'
+        if: failure() && steps.run-steps.outputs.success == 'failure'
       - name: Upload test report
         uses: actions/upload-artifact@v4
         with:
